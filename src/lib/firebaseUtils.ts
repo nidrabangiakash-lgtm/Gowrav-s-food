@@ -29,6 +29,7 @@ export const fetchOrders = async (): Promise<Order[]> => {
                 const data = childSnapshot.val();
                 orders.push({
                     ...data,
+                    items: data.items || [],
                     timestamp: new Date(data.timestamp),
                 } as Order);
             });
@@ -49,6 +50,7 @@ export const subscribeToOrders = (callback: (orders: Order[]) => void) => {
                 const data = childSnapshot.val();
                 orders.push({
                     ...data,
+                    items: data.items || [],
                     timestamp: new Date(data.timestamp),
                 } as Order);
             });
@@ -80,6 +82,7 @@ export const fetchOrderById = async (orderId: string): Promise<Order | null> => 
             const data = snapshot.val();
             return {
                 ...data,
+                items: data.items || [],
                 timestamp: new Date(data.timestamp),
             } as Order;
         }

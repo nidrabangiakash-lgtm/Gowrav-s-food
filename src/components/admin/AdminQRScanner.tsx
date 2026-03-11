@@ -299,8 +299,8 @@ const OrderDetails = ({ order }: { order: Order }) => (
 
         <div className="border-t border-border pt-2">
             <p className="text-muted-foreground font-body text-xs mb-2">Items Ordered</p>
-            {order.items.map(ci => (
-                <div key={ci.menuItem.id} className="flex justify-between text-sm py-0.5">
+            {(order.items || []).map(ci => (
+                <div key={ci.menuItem?.id || Math.random()} className="flex justify-between text-sm py-0.5">
                     <span className="text-foreground font-body">
                         {ci.menuItem.name} × {ci.quantity}
                     </span>

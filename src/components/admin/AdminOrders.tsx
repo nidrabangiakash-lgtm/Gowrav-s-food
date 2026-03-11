@@ -48,8 +48,8 @@ const AdminOrders = () => {
           </div>
 
           <div className="space-y-1">
-            {order.items.map(ci => (
-              <p key={ci.menuItem.id} className="text-foreground/80 font-body text-sm">
+            {(order.items || []).map(ci => (
+              <p key={ci.menuItem?.id || Math.random()} className="text-foreground/80 font-body text-sm">
                 {ci.menuItem.name} × {ci.quantity} — ₹{ci.menuItem.preBookPrice * ci.quantity}
               </p>
             ))}
