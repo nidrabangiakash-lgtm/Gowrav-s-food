@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useReducer, ReactNode, useEffect, useState } from 'react';
 import { MenuItem, CartItem, Order } from '@/types/menu';
 import { defaultMenuItems } from '@/data/defaultMenu';
-import { fetchMenuItems, initializeMenu, placeOrderToFirebase, fetchOrders, updateOrderStatusInFirebase, subscribeToOrders } from '@/lib/firebaseUtils';
+import { fetchMenuItems, initializeMenu, placeOrderToFirebase, fetchOrders, updateOrderStatusInFirebase, subscribeToOrders, addOrUpdateMenuItemInFirebase, deleteMenuItemFromFirebase } from '@/lib/firebaseUtils';
 
 interface AppState {
   menuItems: MenuItem[];
@@ -109,22 +109,33 @@ function appReducer(state: AppState, action: Action): AppState {
     }
     case 'SET_ADMIN':
       return { ...state, isAdmin: action.isAdmin };
-    case 'TOGGLE_ITEM_AVAILABILITY':
+    case 'TOGGLE_ITEM_AVAILABILITY': {
+      const toggledItems = state.menuItems.map(m =>
+          m.id === action.itemId ? { ...m, available: !m.available } : m
+      );
+      const updatedItem = toggledItems.find(m => m.id === action.itemId);
+      if (updatedItem) addOrUpdateMenuItemInFirebase(updatedItem).catch(console.error);
+
       return {
         ...state,
-        menuItems: state.menuItems.map(m =>
-          m.id === action.itemId ? { ...m, available: !m.available } : m
-        ),
+        menuItems: toggledItems,
       };
-    case 'ADD_MENU_ITEM':
+    }
+    case 'ADD_MENU_ITEM': {
+      addOrUpdateMenuItemInFirebase(action.item).catch(console.error);
       return { ...state, menuItems: [...state.menuItems, action.item] };
-    case 'UPDATE_MENU_ITEM':
+    }
+    case 'UPDATE_MENU_ITEM': {
+      addOrUpdateMenuItemInFirebase(action.item).catch(console.error);
       return {
         ...state,
         menuItems: state.menuItems.map(m => (m.id === action.item.id ? action.item : m)),
       };
-    case 'DELETE_MENU_ITEM':
+    }
+    case 'DELETE_MENU_ITEM': {
+      deleteMenuItemFromFirebase(action.itemId).catch(console.error);
       return { ...state, menuItems: state.menuItems.filter(m => m.id !== action.itemId) };
+    }
     case 'SET_SHOW_SUCCESS':
       return { ...state, showSuccess: action.show, lastOrder: action.show ? state.lastOrder : null };
     case 'SCAN_ORDER_QR':

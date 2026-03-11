@@ -111,6 +111,24 @@ export const updateOrderStatusInFirebase = async (orderId: string, status: Order
     }
 };
 
+export const addOrUpdateMenuItemInFirebase = async (item: MenuItem): Promise<void> => {
+    try {
+        await set(ref(db, `menu/${item.id}`), item);
+    } catch (error) {
+        console.error("Error saving menu item:", error);
+        throw error;
+    }
+};
+
+export const deleteMenuItemFromFirebase = async (itemId: string): Promise<void> => {
+    try {
+        await set(ref(db, `menu/${itemId}`), null);
+    } catch (error) {
+        console.error("Error deleting menu item:", error);
+        throw error;
+    }
+};
+
 export const initializeMenu = async (defaultItems: MenuItem[]): Promise<void> => {
     try {
         const existingItems = await fetchMenuItems();

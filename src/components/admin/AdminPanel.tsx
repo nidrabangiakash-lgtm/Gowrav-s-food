@@ -2,8 +2,9 @@ import { useState } from 'react';
 import { useApp } from '@/context/AppContext';
 import AdminOrders from './AdminOrders';
 import AdminDashboard from './AdminDashboard';
+import AdminMenuManagement from './AdminMenuManagement';
 
-const tabs = ['Dashboard', 'Orders'] as const;
+const tabs = ['Dashboard', 'Orders', 'Menu'] as const;
 type Tab = typeof tabs[number];
 
 const AdminPanel = () => {
@@ -43,6 +44,7 @@ const AdminPanel = () => {
       <div className="max-w-5xl mx-auto px-4 py-6">
         {activeTab === 'Dashboard' && <AdminDashboard />}
         {activeTab === 'Orders' && <AdminOrders />}
+        {activeTab === 'Menu' && <AdminMenuManagement />}
       </div>
     </div>
   );
